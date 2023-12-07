@@ -1,0 +1,17 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+build/
+
+# Django stuff:
+*.log
+
+# Environments
+.env/
+env/
+
+.vscode/
+temp/
+experiments/
