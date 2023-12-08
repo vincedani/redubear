@@ -8,7 +8,7 @@
 import logging
 
 
-def get_logger(name: str, log_name: str = None, log_level: int = logging.getLogger().level):
+def get_logger(name: str, log_level: int = logging.getLogger().level):
     logger = logging.getLogger(name)
 
     # Already initialized logger.

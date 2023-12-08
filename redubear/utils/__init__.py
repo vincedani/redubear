@@ -8,6 +8,6 @@
 from .logging import get_logger
 
 from .arguments import process_path
-from .benchmarks import Benchmarks
-
 from .registry import ReducerRegistry
+from .report import ReportGenerator
+from .runner import run_command

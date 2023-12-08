@@ -64,10 +64,11 @@ BENCHMARKS = {
     'gcc-71626': ['perses', 'r.sh', 'small.c'],
 }
 
-class Benchmarks:
+
+class Tests:
 
     @staticmethod
-    def add_arguments(parser) ->None:
+    def add_arguments(parser) -> None:
         benchmark_parser = parser.add_argument_group('Benchmark Options')
 
         benchmark_parser.add_argument('--jrts-root',
@@ -90,22 +91,22 @@ class Benchmarks:
             'jrts': jrts_root,
             'perses': perses_root,
         }
-        self.benchmarks = []
+        self.tests = []
 
         if benchmark in BENCHMARKS:
-            self.benchmarks.append((benchmark, BENCHMARKS[benchmark]))
+            self.tests.append((benchmark, BENCHMARKS[benchmark]))
         else:
-            self.benchmarks += [ (k, v) for k, v in BENCHMARKS.items() if k.startswith(benchmark)]
+            self.tests += [(k, v) for k, v in BENCHMARKS.items() if k.startswith(benchmark)]
 
     def __iter__(self):
         self.index = 0
         return self
 
     def __next__(self):
-        if self.index == len(self.benchmarks):
+        if self.index == len(self.tests):
             raise StopIteration
 
-        name, (project, oracle, input_file) = self.benchmarks[self.index]
+        name, (project, oracle, input_file) = self.tests[self.index]
         self.index += 1
 
         test_root = self.projects[project] / name
@@ -119,5 +120,3 @@ class Benchmarks:
             raise Exception(f'Input file for {name} does not exist ({input_file})')
 
         return name, oracle, input_file
-
-

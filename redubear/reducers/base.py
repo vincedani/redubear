@@ -5,13 +5,9 @@
 # This file may not be copied, modified, or distributed except
 # according to those terms.
 
-from pathlib import Path
-
 class Reducer:
-    def __init__(self, oracle: Path, input: Path, output: Path) -> None:
-        self.oracle = oracle
-        self.input = input
-        self.output = output
+    def __init__(self) -> None:
+        pass
 
     @staticmethod
     def add_subparser(arg_parser) -> None:
@@ -21,5 +17,8 @@ class Reducer:
         """
         pass
 
-    def reduce(**kwargs):
-        pass
+    def generate_command(self, oracle, input_file, temp, output, stats) -> list[str]:
+        raise NotImplementedError('Generate Command function is not implemented.')
+
+    def unique_id() -> str:
+        raise NotImplementedError('Unique ID function is not implemented.')

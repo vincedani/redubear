@@ -5,26 +5,15 @@
 # This file may not be copied, modified, or distributed except
 # according to those terms.
 
-import json
-import picire
-import stat
-
-# Time tracking
-import time
-from datetime import date, timedelta
-
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-from concurrent.futures import ProcessPoolExecutor, wait, ALL_COMPLETED
-from os import chmod, cpu_count, environ, makedirs
+from os import cpu_count
 from pathlib import Path
-from shutil import copy2, rmtree
-from subprocess import Popen, PIPE
-from string import Template
 
 from redubear.utils import get_logger
 from redubear.utils import process_path
-from redubear.utils import Benchmarks
 from redubear.utils import ReducerRegistry
+from redubear.utils import ReportGenerator
+from redubear.benchmark import Tests, Benchmark
 
 def parse_args():
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
@@ -39,6 +28,12 @@ def parse_args():
                         metavar='MEASUREMENT_REPORT.json',
                         help='Path to save the final measurement report in JSON format.')
 
+    parser.add_argument('-o', '--output',
+                        type=lambda p: process_path(parser, p),
+                        default=(Path() / 'experiments').resolve(),
+                        metavar='OUTPUT_DIR',
+                        help='Output directory where the reduced test cases are saved.')
+
     parser.add_argument('-w', '--workers',
                         type=int,
                         default=int(cpu_count() / 2),
@@ -51,13 +46,19 @@ def parse_args():
                         action='store_true',
                         help='Measure peak memory usage of the reducer excluding the SUT')
 
+    parser.add_argument('--temp',
+                        type=lambda p: process_path(parser, p),
+                        default=Path('/tmp/reduction'),
+                        metavar='TEMP_DIR',
+                        help='Temporary directory where the reducers can save their intermediate files (will be deleted).')
+
     parser.add_argument('--log-level',
                         default='ERROR',
                         choices=['CRITICAL', 'FATAL', 'ERROR', 'WARN',
                                  'WARNING', 'INFO', 'DEBUG', 'NOTSET'],
                         help='Verbosity level of diagnostic messages')
 
-    Benchmarks.add_arguments(parser)
+    Tests.add_arguments(parser)
 
     subparsers = parser.add_subparsers(help='Available Reducers', dest='reducer')
     for reducer in ReducerRegistry.keys():
@@ -74,8 +75,12 @@ def main():
     args = parse_args()
 
     get_logger('ReduBear', log_level=args.log_level)
-    benchmarks = Benchmarks(args.benchmark, args.perses_root, args.jrts_root)
 
-    for test_name, oracle, input_file in benchmarks:
-        print(test_name, oracle, input_file)
+    benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root)
+    reducer = ReducerRegistry.get(args.reducer)(**vars(args))
 
+    executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.memory, args.output, args.temp)
+    report = executor.run()
+
+    report_file = args.output / f'ReduBear-{args.tag}.json'
+    ReportGenerator.dump(report, report_file)

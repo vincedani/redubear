@@ -5,6 +5,7 @@
 # This file may not be copied, modified, or distributed except
 # according to those terms.
 from os import cpu_count
+from pathlib import Path
 
 from redubear.reducers import Reducer
 from redubear.utils import ReducerRegistry
@@ -12,8 +13,6 @@ from redubear.utils import ReducerRegistry
 
 @ReducerRegistry.register('picire')
 class Picire(Reducer):
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
 
     @staticmethod
     def add_subparser(arg_parser) -> None:
@@ -32,7 +31,7 @@ class Picire(Reducer):
         Picire._common_arguments(parser)
 
     @staticmethod
-    def _common_arguments(parser) ->None:
+    def _common_arguments(parser) -> None:
         parallel_parser = parser.add_argument_group('Parallel Options')
         parallel_parser.add_argument('-p', '--parallel',
                                      action='store_true',
@@ -62,5 +61,52 @@ class Picire(Reducer):
                                   default=True,
                                   help='disable the eviction of larger test cases from the cache when a failing, i.e., interesting test case is found')
 
-    def reduce(self, **kwargs):
-        pass
+    def __init__(self,
+                 atom: str,
+                 dd_star: bool,
+                 cache: str,
+                 cache_fail: bool,
+                 evict_after_fail: bool,
+                 parallel: bool,
+                 jobs: int,
+                 **kwargs) -> None:
+        self.atom = atom
+        self.dd_star = dd_star
+        self.cache = cache
+        self.cache_fail = cache_fail
+        self.evict_after_fail = evict_after_fail
+        self.parallel = parallel
+        self.jobs = jobs
+
+    def unique_id(self) -> str:
+        return f'picire-{self.atom}-{self.dd_star}-{self.cache}-{self.cache_fail}-{self.evict_after_fail}-{self.parallel}-{self.jobs}'
+
+    def generate_command(self, oracle: Path, input_file: Path, temp: Path, output: Path, stats: Path) -> list[str]:
+        command = [
+            'picire',
+            '--log-level', 'ERROR',
+            '--complement-first',
+            '--subset-iterator', 'skip',
+            '--complement-iterator', 'backward',
+            '--cache', self.cache,
+            '--atom', self.atom,
+            '--test', str(oracle),
+            '--input', str(input_file),
+            '--out', str(temp),
+            '--statistics', str(stats),
+        ]
+
+        if not self.dd_star:
+            command.extend(['--no-dd-star'])
+
+        if not self.evict_after_fail:
+            command.extend(['--no-cache-evict-after-fail'])
+
+        if self.cache_fail:
+            command.extend(['--cache-fail'])
+
+        if self.parallel:
+            command.extend(['--parallel'])
+            command.extend(['--jobs', '4'])
+
+        return command
