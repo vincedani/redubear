@@ -16,8 +16,7 @@ class Picire(Reducer):
 
     @staticmethod
     def add_subparser(arg_parser) -> None:
-        parser = arg_parser.add_parser(
-            'picire', help='Arguments for Picire reducer')
+        parser = arg_parser.add_parser('picire', help='Arguments for Picire reducer')
 
         parser.add_argument('--atom',
                             choices=['char', 'line', 'both'],

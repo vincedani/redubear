@@ -4,9 +4,4 @@
 # <LICENSE.md or https://opensource.org/licenses/BSD-3-Clause>.
 # This file may not be copied, modified, or distributed except
 # according to those terms.
-from . import benchmark
-from . import memory
-from . import utils
-from . import reducers
-
-from .cli import main
+from .peak_memory import PeakMemory

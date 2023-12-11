@@ -22,12 +22,6 @@ def parse_args():
                         metavar='UNIQUE_TAG',
                         help='Measurement tag')
 
-    parser.add_argument('-r', '--report',
-                        required=True,
-                        type=lambda p: process_path(parser, p),
-                        metavar='MEASUREMENT_REPORT.json',
-                        help='Path to save the final measurement report in JSON format.')
-
     parser.add_argument('-o', '--output',
                         type=lambda p: process_path(parser, p),
                         default=(Path() / 'experiments').resolve(),

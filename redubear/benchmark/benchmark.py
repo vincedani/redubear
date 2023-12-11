@@ -14,6 +14,7 @@ from pathlib import Path
 from shutil import copy2, rmtree
 
 from redubear.benchmark import Tests
+from redubear.memory import PeakMemory
 from redubear.reducers import Reducer
 from redubear.utils import get_logger, run_command, ReportGenerator
 
@@ -38,27 +39,22 @@ def run_single(name: str,
     makedirs(final_out_dir, exist_ok=True)
     makedirs(temporal_dir, exist_ok=True)
 
+    command = []
     if memory:
-        # TODO: Generate Memory Measurement Oracle Wrapper here!
-        pass
+        memory_measurer = PeakMemory(temporal_dir)
+        command += memory_measurer.generate_command()
 
-    command = reducer.generate_command(
+        oracle_wrapper = Path(temporal_dir / 'redubear-wrapper.py')
+        oracle = memory_measurer.generate_oracle_wrapper(oracle, oracle_wrapper)
+
+    command += reducer.generate_command(
         oracle, input_file, temporal_dir, final_out_dir, stat_file)
-
-    if memory:
-        command = ['/usr/bin/time', '-f', '%M'] + command
 
     exit_code, stdout = run_command(
         command,
         oracle.parent,
         env=dict(environ, PYTHONOPTIMIZE='1'),
     )
-
-    memory_usage = 0
-    if memory:
-        # TODO: Process STDOUT as time output
-        #     memory_usage = str(err, encoding='utf-8')
-        pass
 
     logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} exited with: {exit_code}')
 
@@ -69,8 +65,11 @@ def run_single(name: str,
         copy2(stats['path_output'], final_out_dir)
         stats['path_output'] = str(final_out_dir / input_file.name)
 
+        stats['cache_size (kbytes)'] = round(stats['cache_size'] / 1024, 2)
+        del stats['cache_size']
+
         if memory:
-            stats['peak_memory (kbytes)'] = memory_usage
+            stats['peak_memory (kbytes)'] = memory_measurer.get(stdout)
 
         ReportGenerator.dump(stats, stat_file)
         report[name] = stats
