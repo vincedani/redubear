@@ -68,7 +68,7 @@ def main():
     """
     args = parse_args()
 
-    get_logger('ReduBear', log_level=args.log_level)
+    logger = get_logger('ReduBear', log_level=args.log_level)
 
     benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root, args.custom_oracle, args.custom_input)
     reducer = ReducerRegistry.get(args.reducer)(**vars(args))
@@ -78,3 +78,4 @@ def main():
 
     report_file = args.output / f'ReduBear-{args.tag}.json'
     ReportGenerator.dump(report, report_file)
+    logger.info(f'Report: {str(report_file)}')
