@@ -70,7 +70,7 @@ def main():
 
     get_logger('ReduBear', log_level=args.log_level)
 
-    benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root)
+    benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root, args.custom_oracle, args.custom_input)
     reducer = ReducerRegistry.get(args.reducer)(**vars(args))
 
     executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.memory, args.output, args.temp)

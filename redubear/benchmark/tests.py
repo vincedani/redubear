@@ -83,15 +83,39 @@ class Tests:
 
         benchmark_parser.add_argument('--benchmark',
                                       choices=['jerry', 'clang', 'gcc'] + list(BENCHMARKS.keys()),
-                                      default='jerry',
+                                      default=None,
                                       help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite.')
 
-    def __init__(self, benchmark: str, perses_root: Path, jrts_root: Path) -> None:
+        benchmark_parser.add_argument('--custom-oracle',
+                                      type=lambda p: process_path(parser, p, should_exist=True),
+                                      default=None,
+                                      help='Custom oracle script for "--custom-input". Omits --benchmark arguments.')
+
+        benchmark_parser.add_argument('--custom-input',
+                                      type=lambda p: process_path(parser, p, should_exist=True),
+                                      default=None,
+                                      help='Custom input file to be reduced. Omits --benchmark arguments.')
+
+    def __init__(self,
+                 benchmark: str,
+                 perses_root: Path,
+                 jrts_root: Path,
+                 custom_oracle: Path,
+                 custom_input: Path) -> None:
+
+        if benchmark and (custom_input or custom_input):
+            raise Exception('Benchmarks and custom inputs for reduction are mutually exclusive. Une one of them.')
+
+        self.tests = []
+
+        if custom_input:
+            self.tests.append((f'custom_{custom_input.stem}', ['custom', custom_oracle, custom_input]))
+            return
+
         self.projects = {
             'jrts': jrts_root,
             'perses': perses_root,
         }
-        self.tests = []
 
         if benchmark in BENCHMARKS:
             self.tests.append((benchmark, BENCHMARKS[benchmark]))
@@ -109,9 +133,10 @@ class Tests:
         name, (project, oracle, input_file) = self.tests[self.index]
         self.index += 1
 
-        test_root = self.projects[project] / name
-        oracle = test_root / oracle
-        input_file = test_root / input_file
+        if project != 'custom':
+            test_root = self.projects[project] / name
+            oracle = test_root / oracle
+            input_file = test_root / input_file
 
         if not oracle.is_file():
             raise Exception(f'Tester script for {name} does not exist ({oracle})')
