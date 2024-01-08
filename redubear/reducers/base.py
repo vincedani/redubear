@@ -17,8 +17,5 @@ class Reducer:
         """
         pass
 
-    def generate_command(self, oracle, input_file, temp, output, stats) -> list[str]:
+    def generate_command(self, oracle, input_file, temp, stats) -> list[str]:
         raise NotImplementedError('Generate Command function is not implemented.')
-
-    def unique_id() -> str:
-        raise NotImplementedError('Unique ID function is not implemented.')

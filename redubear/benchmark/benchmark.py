@@ -47,8 +47,7 @@ def run_single(name: str,
         oracle_wrapper = Path(temporal_dir / 'redubear-wrapper.py')
         oracle = memory_measurer.generate_oracle_wrapper(oracle, oracle_wrapper)
 
-    command += reducer.generate_command(
-        oracle, input_file, temporal_dir, final_out_dir, stat_file)
+    command += reducer.generate_command(oracle, input_file, temporal_dir, stat_file)
 
     exit_code, stdout = run_command(
         command,

@@ -18,19 +18,20 @@ class Picire(Reducer):
     def add_subparser(arg_parser) -> None:
         parser = arg_parser.add_parser('picire', help='Arguments for Picire reducer')
 
+        Picire._common_arguments(parser)
+
         parser.add_argument('--atom',
                             choices=['char', 'line', 'both'],
                             default='line',
                             help='atom (i.e., granularity) of input')
 
+    @staticmethod
+    def _common_arguments(parser) -> None:
         parser.add_argument('--dd-star',
                             default=False,
                             action='store_true',
                             help='use fixpoint iteration of DDMin')
-        Picire._common_arguments(parser)
 
-    @staticmethod
-    def _common_arguments(parser) -> None:
         parallel_parser = parser.add_argument_group('Parallel Options')
         parallel_parser.add_argument('-p', '--parallel',
                                      action='store_true',
@@ -77,18 +78,22 @@ class Picire(Reducer):
         self.parallel = parallel
         self.jobs = jobs
 
-    def unique_id(self) -> str:
-        return f'picire-{self.atom}-{self.dd_star}-{self.cache}-{self.cache_fail}-{self.evict_after_fail}-{self.parallel}-{self.jobs}'
-
-    def generate_command(self, oracle: Path, input_file: Path, temp: Path, output: Path, stats: Path) -> list[str]:
+    def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
         command = [
             'picire',
+            '--atom', self.atom,
+        ]
+
+        command += self._common_parts(oracle, input_file, temp, stats)
+        return command
+
+    def _common_parts(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
+        command = [
             '--log-level', 'ERROR',
             '--complement-first',
             '--subset-iterator', 'skip',
             '--complement-iterator', 'backward',
             '--cache', self.cache,
-            '--atom', self.atom,
             '--test', str(oracle),
             '--input', str(input_file),
             '--out', str(temp),
