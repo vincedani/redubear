@@ -4,11 +4,12 @@
 # <LICENSE.md or https://opensource.org/licenses/BSD-3-Clause>.
 # This file may not be copied, modified, or distributed except
 # according to those terms.
-from os import cpu_count
 from pathlib import Path
+from shutil import copy2
 
 from redubear.reducers import Reducer
 from redubear.utils import ReducerRegistry
+from redubear.utils import ReportGenerator
 
 
 @ReducerRegistry.register('picire')
@@ -32,16 +33,11 @@ class Picire(Reducer):
                             action='store_true',
                             help='use fixpoint iteration of DDMin')
 
-        parallel_parser = parser.add_argument_group('Parallel Options')
-        parallel_parser.add_argument('-p', '--parallel',
-                                     action='store_true',
-                                     default=False,
-                                     help='run DD in parallel')
-        parallel_parser.add_argument('-j', '--jobs',
-                                     metavar='N',
-                                     type=int,
-                                     default=cpu_count(),
-                                     help='maximum number of test commands to execute in parallel (has effect in parallel mode only; default: %(default)s)')
+        parser.add_argument('-j', '--jobs',
+                            metavar='N',
+                            type=int,
+                            default=1,
+                            help='maximum number of test commands to execute in parallel (default: %(default)s)')
 
         # Cache related options.
         cache_parser = parser.add_argument_group('Cache Options')
@@ -67,7 +63,6 @@ class Picire(Reducer):
                  cache: str,
                  cache_fail: bool,
                  evict_after_fail: bool,
-                 parallel: bool,
                  jobs: int,
                  **kwargs) -> None:
         self.atom = atom
@@ -75,7 +70,6 @@ class Picire(Reducer):
         self.cache = cache
         self.cache_fail = cache_fail
         self.evict_after_fail = evict_after_fail
-        self.parallel = parallel
         self.jobs = jobs
 
     def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
@@ -109,8 +103,19 @@ class Picire(Reducer):
         if self.cache_fail:
             command.extend(['--cache-fail'])
 
-        if self.parallel:
+        if self.jobs > 1:
             command.extend(['--parallel'])
-            command.extend(['--jobs', '4'])
+            command.extend(['--jobs', self.jobs])
 
         return command
+
+    def post_process(self, stat_file, input_file, out_dir, **kwargs) -> dict:
+        stats = ReportGenerator.read(stat_file)
+
+        copy2(stats['path_output'], out_dir)
+        stats['path_output'] = str(out_dir / input_file.name)
+
+        stats['cache_size (kbytes)'] = round(stats['cache_size'] / 1024, 2)
+        del stats['cache_size']
+
+        return stats

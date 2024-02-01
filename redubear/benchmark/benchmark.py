@@ -11,7 +11,7 @@ from concurrent.futures import ProcessPoolExecutor, wait, ALL_COMPLETED
 from datetime import datetime, timedelta
 from os import environ, makedirs
 from pathlib import Path
-from shutil import copy2, rmtree
+from shutil import rmtree
 
 from redubear.benchmark import Tests
 from redubear.memory import PeakMemory
@@ -52,20 +52,14 @@ def run_single(name: str,
     exit_code, stdout = run_command(
         command,
         oracle.parent,
-        env=dict(environ, PYTHONOPTIMIZE='1'),
+        env=dict(environ, PYTHONOPTIMIZE='1', PERSES_CACHE_MEMORY_PROFILING_TIME_INTERVAL='3000'),
     )
 
     logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} exited with: {exit_code}')
 
     report = dict()
     if exit_code == 0:
-        stats = ReportGenerator.read(stat_file)
-
-        copy2(stats['path_output'], final_out_dir)
-        stats['path_output'] = str(final_out_dir / input_file.name)
-
-        stats['cache_size (kbytes)'] = round(stats['cache_size'] / 1024, 2)
-        del stats['cache_size']
+        stats = reducer.post_process(stat_file, input_file, final_out_dir, temporal_dir)
 
         if memory:
             stats['peak_memory (kbytes)'] = memory_measurer.get(stdout)

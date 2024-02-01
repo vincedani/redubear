@@ -25,10 +25,9 @@ class Picireny(Picire):
                  cache: str,
                  cache_fail: bool,
                  evict_after_fail: bool,
-                 parallel: bool,
                  jobs: int,
                  **kwargs) -> None:
-        super().__init__(None, dd_star, cache, cache_fail, evict_after_fail, parallel, jobs)
+        super().__init__(None, dd_star, cache, cache_fail, evict_after_fail, jobs)
 
     def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
         grammar, start_rule = get_grammar(input_file.suffix[1:])

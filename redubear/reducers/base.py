@@ -19,3 +19,6 @@ class Reducer:
 
     def generate_command(self, oracle, input_file, temp, stats) -> list[str]:
         raise NotImplementedError('Generate Command function is not implemented.')
+
+    def post_process(self, stat_file, input_file, out_dir, temp_dir) -> dict:
+        raise NotImplementedError('Post Process function is not implemented.')
