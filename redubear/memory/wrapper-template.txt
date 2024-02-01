@@ -25,8 +25,11 @@ def run_command(command, cwd, env=environ):
     memory_usage = str(err, encoding='utf-8').strip()
 
     # It's ok, oracle scripts should return 1 if the given input does not
-    # reproduce the desired behavior.
-    memory_usage = memory_usage.replace('Command exited with non-zero status 1\n', '')
+    # reproduce the desired behavior. E.g.,
+    # "Command exited with non-zero status 1\n{peakmem}", or
+    # "path/to/oracle: line XY: 1612732 Killed ( timeout -s 9 $TIMEOUTEXE ./t > out0.txt 2>&1 ) &> /dev/null\n{peakmem}"
+    memory_usage = memory_usage.splitlines()[-1]
+
     return process.returncode, int(memory_usage)
 
 
