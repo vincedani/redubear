@@ -46,7 +46,7 @@ if __name__ == '__main__':
         str(args.input),
     ]
 
-    exit_code, memory_usage = run_command(command, oracle.parent)
+    exit_code, memory_usage = run_command(command, args.input.parent)
 
     lock = FileLock(lock_file)
     with lock:
