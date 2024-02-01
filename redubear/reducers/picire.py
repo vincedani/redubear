@@ -4,6 +4,7 @@
 # <LICENSE.md or https://opensource.org/licenses/BSD-3-Clause>.
 # This file may not be copied, modified, or distributed except
 # according to those terms.
+from argparse import ArgumentDefaultsHelpFormatter
 from pathlib import Path
 from shutil import copy2
 
@@ -17,7 +18,8 @@ class Picire(Reducer):
 
     @staticmethod
     def add_subparser(arg_parser) -> None:
-        parser = arg_parser.add_parser('picire', help='Arguments for Picire reducer')
+        parser = arg_parser.add_parser('picire', help='Arguments for Picire reducer',
+                                       formatter_class=ArgumentDefaultsHelpFormatter)
 
         Picire._common_arguments(parser)
 
@@ -105,11 +107,11 @@ class Picire(Reducer):
 
         if self.jobs > 1:
             command.extend(['--parallel'])
-            command.extend(['--jobs', self.jobs])
+            command.extend(['--jobs', str(self.jobs)])
 
         return command
 
-    def post_process(self, stat_file, input_file, out_dir, **kwargs) -> dict:
+    def post_process(self, stat_file, input_file, out_dir, *args) -> dict:
         stats = ReportGenerator.read(stat_file)
 
         copy2(stats['path_output'], out_dir)
