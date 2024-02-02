@@ -33,6 +33,15 @@ def run_command(command, cwd, env=environ):
     return process.returncode, int(memory_usage)
 
 
+def read_mem(memory_file):
+    if not memory_file.exists():
+        return 0
+
+    with open(memory_file) as mem_file:
+        data = mem_file.read()
+        return 0 if data == '' else int(data)
+
+
 if __name__ == '__main__':
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
     parser.add_argument('input', type=Path, help='An input file to be checked')
@@ -53,11 +62,9 @@ if __name__ == '__main__':
 
     lock = FileLock(lock_file)
     with lock:
-        with open(memory_file, 'w+') as mem_file:
-            data = mem_file.read()
-            peak_memory = 0 if data == '' else int(data)
-
-            if memory_usage > peak_memory:
+        peak_memory = read_mem(memory_file)
+        if memory_usage > peak_memory:
+            with open(memory_file, 'w+') as mem_file:
                 mem_file.write(str(memory_usage))
 
     exit(exit_code)
