@@ -104,7 +104,7 @@ class Tests:
                  custom_input: Path) -> None:
 
         if benchmark and (custom_input or custom_input):
-            raise Exception('Benchmarks and custom inputs for reduction are mutually exclusive. Une one of them.')
+            raise Exception('Benchmarks and custom inputs for reduction are mutually exclusive. Use one of them.')
 
         self.tests = []
 
