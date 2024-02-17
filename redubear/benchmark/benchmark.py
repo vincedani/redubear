@@ -44,9 +44,6 @@ def run_single(name: str,
         memory_measurer = PeakMemory(temporal_dir)
         command += memory_measurer.generate_command()
 
-        oracle_wrapper = Path(temporal_dir / 'redubear-wrapper.py')
-        oracle = memory_measurer.generate_oracle_wrapper(oracle, oracle_wrapper)
-
     command += reducer.generate_command(oracle, input_file, temporal_dir, stat_file)
 
     exit_code, stdout = run_command(
@@ -62,7 +59,7 @@ def run_single(name: str,
         stats = reducer.post_process(stat_file, input_file, final_out_dir, temporal_dir)
 
         if memory:
-            stats['peak_memory (kbytes)'] = memory_measurer.get(stdout)
+            stats['peak_memory (MB)'] = memory_measurer.get()
 
         ReportGenerator.dump(stats, stat_file)
         report[name] = stats

@@ -69,8 +69,11 @@ class Perses(Reducer):
             '--threads', str(self.jobs),  # positive integer or 'auto',
             '--stat-dump-file', str(stats),
             '--query-cache-type', self.cache,
-            '--profile-query-cache-memory', str(stats.parent / f'{stats.stem}.pqcm'),
         ]
+
+        # Note: Memory measurement is unified, and based on Valgrind tool. The reports
+        # rely only on Valgrind, that measures peak memory without child processed (e.g., the SUT).
+        # '--profile-query-cache-memory', str(stats.parent / f'{stats.stem}.pqcm'),
 
         # In one reduction process, only the "cache memory size" OR the "cache item count" can be
         # measured. Cannot do both at once. The "memory size" is prioritized higher.
@@ -117,14 +120,6 @@ class Perses(Reducer):
             if 'fail_count' in line:
                 parts = line.split('=')
                 stats['tests_failed'] = int(parts[-1])
-
-        memory_stat_file = stat_file.parent / f'{stat_file.stem}.pqcm'
-        with open(memory_stat_file) as file:
-            contents = file.readlines()
-
-        # timestamp cache_size (bytes)
-        cache_size = max([int(line.split()[-1]) for line in contents])
-        stats['cache_size (kbytes)'] = round(cache_size / 1024, 2)
 
         stats['path_input'] = str(input_file)
 

@@ -117,7 +117,4 @@ class Picire(Reducer):
         copy2(stats['path_output'], out_dir)
         stats['path_output'] = str(out_dir / input_file.name)
 
-        stats['cache_size (kbytes)'] = round(stats['cache_size'] / 1024, 2)
-        del stats['cache_size']
-
         return stats
