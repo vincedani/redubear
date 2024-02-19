@@ -27,14 +27,27 @@ def run_single(name: str,
                memory: bool,
                output: Path,
                temp: Path,
+               force: bool,
                logger):
     # Note: "cannot pickle '_thread.lock' object" Exception occurs if this function is inside
     # the Benchmark class.
-    logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} started ...')
-
     temporal_dir = temp / 'redubear' / name / tag
     final_out_dir = output / name / tag
     stat_file = final_out_dir / 'picire.json'
+
+    report = dict()
+
+    if not force:
+        reduced_file = final_out_dir / input_file.name
+        # Both statistics and the reduced file exist, returning the results of the
+        # previous experiment.
+        if stat_file.exists() and reduced_file.exists():
+            pervious_results = ReportGenerator.read(stat_file)
+            logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} load cached results')
+            report[name] = pervious_results
+            return report
+
+    logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} started ...')
 
     makedirs(final_out_dir, exist_ok=True)
     makedirs(temporal_dir, exist_ok=True)
@@ -54,7 +67,6 @@ def run_single(name: str,
 
     logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} exited with: {exit_code}')
 
-    report = dict()
     if exit_code == 0:
         stats = reducer.post_process(stat_file, input_file, final_out_dir, temporal_dir)
 
@@ -72,13 +84,22 @@ def run_single(name: str,
 
 
 class Benchmark:
-    def __init__(self, inputs: Tests, reducer: Reducer, tag: str, workers: int, memory: bool, output: Path, temp: Path) -> None:
+    def __init__(self,
+                 inputs: Tests,
+                 reducer: Reducer,
+                 tag: str,
+                 workers: int,
+                 memory: bool,
+                 output: Path,
+                 temp: Path,
+                 force: bool) -> None:
         self.inputs = inputs
         self.reducer = reducer
         self.tag = tag
         self.memory = memory
         self.output = output
         self.temp = temp
+        self.force = force
 
         self.executor = ProcessPoolExecutor(max_workers=workers)
         self.logger = get_logger('ReduBear')
@@ -90,7 +111,7 @@ class Benchmark:
         start_time = time.time()
         for test_name, oracle, input_file in self.inputs:
             futures.append(self.executor.submit(
-                run_single, test_name, self.reducer, oracle, input_file, self.tag, self.memory, self.output, self.temp, self.logger))
+                run_single, test_name, self.reducer, oracle, input_file, self.tag, self.memory, self.output, self.temp, self.force, self.logger))
 
         # wait for all tasks to complete
         done, not_done = wait(futures, return_when=ALL_COMPLETED)

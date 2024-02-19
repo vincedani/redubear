@@ -40,6 +40,11 @@ def parse_args():
                         action='store_true',
                         help='Measure peak memory usage of the reducer excluding the SUT')
 
+    parser.add_argument('--force',
+                        default=False,
+                        action='store_true',
+                        help='Force remeasuring experiments. If a previous experiment was carried out with the same tag, "--force" ignores it and runs the experiment again (overwrites the results).')
+
     parser.add_argument('--temp',
                         type=lambda p: process_path(parser, p),
                         default=Path('/tmp/reduction'),
@@ -73,7 +78,7 @@ def main():
     benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root, args.custom_oracle, args.custom_input)
     reducer = ReducerRegistry.get(args.reducer)(**vars(args))
 
-    executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.memory, args.output, args.temp)
+    executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.memory, args.output, args.temp, args.force)
     report = executor.run()
 
     report_file = args.output / f'ReduBear-{args.tag}.json'
