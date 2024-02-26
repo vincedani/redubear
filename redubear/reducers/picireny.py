@@ -5,6 +5,7 @@
 # This file may not be copied, modified, or distributed except
 # according to those terms.
 from pathlib import Path
+from argparse import SUPPRESS
 
 from redubear.reducers import Picire
 from redubear.reducers.grammars import get_grammar
@@ -20,14 +21,35 @@ class Picireny(Picire):
 
         Picire._common_arguments(parser)
 
+        # Suppress --atom in Picireny as it is unused in HDD.
+        parser.add_argument('--atom', help=SUPPRESS)
+
+        hdd_parser = parser.add_argument_group('HDD Options')
+        hdd_parser.add_argument('--hdd',
+                                metavar='NAME',
+                                choices=['hdd', 'hddr'],
+                                default='hdd',
+                                help='HDD variant to run (%(choices)s; default: %(default)s)')
+
+        hdd_parser.add_argument('--phase',
+                                metavar='NAME',
+                                choices=['prune', 'coarse-prune', 'hoist', 'prune+hoist', 'coarse-prune+hoist'],
+                                action='append',
+                                help='parametrization of the HDD variant to run (%(choices)s; default: prune) '
+                                     '(may be specified multiple times to run different parametrization in sequence)')
+
     def __init__(self,
                  dd_star: bool,
                  cache: str,
                  cache_fail: bool,
                  evict_after_fail: bool,
                  jobs: int,
+                 hdd: str,
+                 phase: list,
                  **kwargs) -> None:
         super().__init__(None, dd_star, cache, cache_fail, evict_after_fail, jobs)
+        self.hdd = hdd
+        self.phases = phase
 
     def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
         grammar, start_rule = get_grammar(input_file.suffix[1:])
@@ -37,11 +59,14 @@ class Picireny(Picire):
             '--sys-recursion-limit', '10000',
             '--flatten-recursion',
             '--start', start_rule,
+            '--hdd', self.hdd,
             '--grammar',
         ]
         command += grammar
 
+        for phase in self.phases:
+            command += ['--phase', phase]
+
         command += self._common_parts(oracle, input_file, temp, stats)
+
         return command
-
-
