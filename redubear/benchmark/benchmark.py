@@ -24,7 +24,7 @@ def run_single(name: str,
                oracle: Path,
                input_file: Path,
                tag: str,
-               memory: bool,
+               valgrind: bool,
                output: Path,
                temp: Path,
                force: bool,
@@ -53,7 +53,7 @@ def run_single(name: str,
     makedirs(temporal_dir, exist_ok=True)
 
     command = []
-    if memory:
+    if valgrind:
         memory_measurer = PeakMemory(temporal_dir)
         command += memory_measurer.generate_command()
 
@@ -70,7 +70,7 @@ def run_single(name: str,
     if exit_code == 0:
         stats = reducer.post_process(stat_file, input_file, final_out_dir, temporal_dir)
 
-        if memory:
+        if valgrind:
             stats['peak_memory (MB)'] = memory_measurer.get()
 
         ReportGenerator.dump(stats, stat_file)
@@ -89,14 +89,14 @@ class Benchmark:
                  reducer: Reducer,
                  tag: str,
                  workers: int,
-                 memory: bool,
+                 valgrind: bool,
                  output: Path,
                  temp: Path,
                  force: bool) -> None:
         self.inputs = inputs
         self.reducer = reducer
         self.tag = tag
-        self.memory = memory
+        self.valgrind = valgrind
         self.output = output
         self.temp = temp
         self.force = force
@@ -111,7 +111,7 @@ class Benchmark:
         start_time = time.time()
         for test_name, oracle, input_file in self.inputs:
             futures.append(self.executor.submit(
-                run_single, test_name, self.reducer, oracle, input_file, self.tag, self.memory, self.output, self.temp, self.force, self.logger))
+                run_single, test_name, self.reducer, oracle, input_file, self.tag, self.valgrind, self.output, self.temp, self.force, self.logger))
 
         # wait for all tasks to complete
         done, not_done = wait(futures, return_when=ALL_COMPLETED)

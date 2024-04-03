@@ -35,7 +35,7 @@ def parse_args():
                         metavar=f'[0, {cpu_count()}]',
                         help='Number of workers to use to parallel reduce the tests')
 
-    parser.add_argument('-m', '--memory',
+    parser.add_argument('--valgrind',
                         default=False,
                         action='store_true',
                         help='Measure peak memory usage of the reducer excluding the SUT')
@@ -78,7 +78,7 @@ def main():
     benchmarks = Tests(args.benchmark, args.perses_root, args.jrts_root, args.custom_oracle, args.custom_input)
     reducer = ReducerRegistry.get(args.reducer)(**vars(args))
 
-    executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.memory, args.output, args.temp, args.force)
+    executor = Benchmark(benchmarks, reducer, args.tag, args.workers, args.valgrind, args.output, args.temp, args.force)
     report = executor.run()
 
     report_file = args.output / f'ReduBear-{args.tag}.json'
