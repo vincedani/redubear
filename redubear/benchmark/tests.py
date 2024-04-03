@@ -29,7 +29,7 @@ BENCHMARKS = {
     'clang-18556': ['perses', 'r.sh', 'small.c'],
     'clang-18596': ['perses', 'r.sh', 'small.c'],
     'clang-19595': ['perses', 'r.sh', 'small.c'],
-    'clang-20680': ['perses', 'r.sh', 'small.c'],
+    # 'clang-20680': ['perses', 'r.sh', 'small.c'], # unstable
     'clang-21467': ['perses', 'r.sh', 'small.c'],
     'clang-21582': ['perses', 'r.sh', 'small.c'],
     'clang-22337': ['perses', 'r.sh', 'small.c'],
@@ -39,7 +39,7 @@ BENCHMARKS = {
     'clang-23353': ['perses', 'r.sh', 'small.c'],
     'clang-25900': ['perses', 'r.sh', 'small.c'],
     'clang-26350': ['perses', 'r.sh', 'small.c'],
-    'clang-26760': ['perses', 'r.sh', 'small.c'],
+    # 'clang-26760': ['perses', 'r.sh', 'small.c'], # unstable
     'clang-27137': ['perses', 'r.sh', 'small.c'],
     'clang-27747': ['perses', 'r.sh', 'small.c'],
     'clang-31259': ['perses', 'r.sh', 'small.c'],
@@ -48,9 +48,9 @@ BENCHMARKS = {
     # Note that the docker environment from the linked repository must be set up.
     'gcc-58731': ['perses', 'r.sh', 'small.c'],
     'gcc-59903': ['perses', 'r.sh', 'small.c'],
-    'gcc-60116': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-60116': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-60452': ['perses', 'r.sh', 'small.c'],
-    'gcc-61047': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-61047': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-61383': ['perses', 'r.sh', 'small.c'],
     'gcc-61917': ['perses', 'r.sh', 'small.c'],
     'gcc-64990': ['perses', 'r.sh', 'small.c'],
