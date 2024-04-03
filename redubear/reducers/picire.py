@@ -58,6 +58,8 @@ class Picire(Reducer):
                                   action='store_false',
                                   default=True,
                                   help='disable the eviction of larger test cases from the cache when a failing, i.e., interesting test case is found')
+        cache_parser.add_argument('--measure-memory', action='store_true', default=False,
+                                  help='measure the memory consumption of the cache memory')
 
     def __init__(self,
                  atom: str,
@@ -66,6 +68,7 @@ class Picire(Reducer):
                  cache_fail: bool,
                  evict_after_fail: bool,
                  jobs: int,
+                 measure_memory: bool,
                  **kwargs) -> None:
         self.atom = atom
         self.dd_star = dd_star
@@ -73,6 +76,7 @@ class Picire(Reducer):
         self.cache_fail = cache_fail
         self.evict_after_fail = evict_after_fail
         self.jobs = jobs
+        self.measure_memory = measure_memory
 
     def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
         command = [
@@ -108,6 +112,9 @@ class Picire(Reducer):
         if self.jobs > 1:
             command.extend(['--parallel'])
             command.extend(['--jobs', str(self.jobs)])
+
+        if self.measure_memory:
+            command.extend(['--measure-memory'])
 
         return command
 
