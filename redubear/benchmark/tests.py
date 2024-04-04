@@ -82,9 +82,9 @@ class Tests:
                                       help='Home directory of Perses Test Suite (<path/to/project>/benchmark)')
 
         benchmark_parser.add_argument('--benchmark',
-                                      choices=['jerry', 'clang', 'gcc'] + list(BENCHMARKS.keys()),
+                                      choices=['jerry', 'clang', 'gcc', 'perses'] + list(BENCHMARKS.keys()),
                                       default=None,
-                                      help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite.')
+                                      help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite. "perses": "clang" + "gcc"')
 
         benchmark_parser.add_argument('--custom-oracle',
                                       type=lambda p: process_path(parser, p, should_exist=True),
@@ -120,7 +120,12 @@ class Tests:
         if benchmark in BENCHMARKS:
             self.tests.append((benchmark, BENCHMARKS[benchmark]))
         else:
-            self.tests += [(k, v) for k, v in BENCHMARKS.items() if k.startswith(benchmark)]
+            if benchmark == 'perses':
+                benchmark = ['clang', 'gcc']
+            else:
+                benchmark = [benchmark]
+
+            self.tests += [(k, v) for k, v in BENCHMARKS.items() if any(k for b in benchmark if k.startswith(b))]
 
     def __iter__(self):
         self.index = 0
