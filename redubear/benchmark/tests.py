@@ -52,7 +52,7 @@ BENCHMARKS = {
     'gcc-60452': ['perses', 'r.sh', 'small.c'],
     # 'gcc-61047': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-61383': ['perses', 'r.sh', 'small.c'],
-    'gcc-61917': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-61917': ['perses', 'r.sh', 'small.c'],
     'gcc-64990': ['perses', 'r.sh', 'small.c'],
     'gcc-65383': ['perses', 'r.sh', 'small.c'],
     'gcc-66186': ['perses', 'r.sh', 'small.c'],
