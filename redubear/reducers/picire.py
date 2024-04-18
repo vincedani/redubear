@@ -35,6 +35,11 @@ class Picire(Reducer):
                             action='store_true',
                             help='use fixpoint iteration of DDMin')
 
+        parser.add_argument('--greeddy',
+                            default=False,
+                            action='store_true',
+                            help='use greeddy DDMin algorithm')
+
         parser.add_argument('-j', '--jobs',
                             metavar='N',
                             type=int,
@@ -64,6 +69,7 @@ class Picire(Reducer):
     def __init__(self,
                  atom: str,
                  dd_star: bool,
+                 greeddy: bool,
                  cache: str,
                  cache_fail: bool,
                  evict_after_fail: bool,
@@ -72,6 +78,7 @@ class Picire(Reducer):
                  **kwargs) -> None:
         self.atom = atom
         self.dd_star = dd_star
+        self.greeddy = greeddy
         self.cache = cache
         self.cache_fail = cache_fail
         self.evict_after_fail = evict_after_fail
@@ -102,6 +109,9 @@ class Picire(Reducer):
 
         if not self.dd_star:
             command.extend(['--no-dd-star'])
+
+        if not self.greeddy:
+            command.extend(['--no-greedy'])
 
         if not self.evict_after_fail:
             command.extend(['--no-cache-evict-after-fail'])
