@@ -40,6 +40,7 @@ class Picireny(Picire):
 
     def __init__(self,
                  dd_star: bool,
+                 greeddy: bool,
                  cache: str,
                  cache_fail: bool,
                  evict_after_fail: bool,
@@ -48,7 +49,7 @@ class Picireny(Picire):
                  phase: list,
                  measure_memory: bool,
                  **kwargs) -> None:
-        super().__init__(None, dd_star, cache, cache_fail, evict_after_fail, jobs, measure_memory)
+        super().__init__(None, dd_star, greeddy, cache, cache_fail, evict_after_fail, jobs, measure_memory)
         self.hdd = hdd
         self.phases = phase
 
