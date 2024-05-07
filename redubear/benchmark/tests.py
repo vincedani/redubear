@@ -46,7 +46,7 @@ BENCHMARKS = {
 
     # Perses Test Suite (https://github.com/uw-pluverse/perses)
     # Note that the docker environment from the linked repository must be set up.
-    'gcc-58731': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-58731': ['perses', 'r.sh', 'small.c'], # HDD: ANTLRv4 parse error: missing include directives -> PASS-es the test
     'gcc-59903': ['perses', 'r.sh', 'small.c'],
     # 'gcc-60116': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-60452': ['perses', 'r.sh', 'small.c'],
