@@ -44,25 +44,31 @@ class Perses(Reducer):
                             default='COMPACT_QUERY_CACHE',
                             help='cache strategy (%(choices)s; default: %(default)s)')
 
+        parser.add_argument('--measure-memory', action='store_true', default=False,
+                            help='measure the memory consumption of the cache memory')
+
     def __init__(self,
                  jar: Path,
                  object_explorer: Path,
                  cache: str,
                  jobs: int,
+                 measure_memory: bool,
                  **kwargs) -> None:
         self.jar = jar
         self.object_explorer = object_explorer
         self.cache = cache
         self.jobs = jobs
+        self.measure_memory = measure_memory
 
     def generate_command(self, oracle: Path, input_file: Path, temp: Path, stats: Path) -> list[str]:
         command = [
             'java',
             f'-javaagent:{self.object_explorer}',
             '-jar', str(self.jar),
-            '--verbosity', 'CONFIG',  # SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST
+            # '--verbosity', 'CONFIG',  # SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST
             '--query-caching', 'TRUE',  # TRUE, FALSE, AUTO
-            '--code-format', 'ORIG_FORMAT',
+            '--code-format', 'COMPACT_ORIG_FORMAT',
+            # '--fixpoint', 'true', # default: true
             '--test-script', str(oracle),
             '--input-file', str(input_file),
             '--output-dir', str(temp),
@@ -71,23 +77,12 @@ class Perses(Reducer):
             '--query-cache-type', self.cache,
         ]
 
-        # Note: Memory measurement is unified, and based on Valgrind tool. The reports
-        # rely only on Valgrind, that measures peak memory without child processed (e.g., the SUT).
-        # '--profile-query-cache-memory', str(stats.parent / f'{stats.stem}.pqcm'),
+        if self.measure_memory:
+            command.extend(['--profile-query-cache-memory', str(stats.parent / f'{stats.stem}.pqcm'),])
 
         # In one reduction process, only the "cache memory size" OR the "cache item count" can be
         # measured. Cannot do both at once. The "memory size" is prioritized higher.
         # '--profile-query-cache', str(stats.parent / f'{stats.stem}.pqc'),
-
-        # Possible reduction algorithms:
-        # '--alg'
-        #    concurrent_state_ddmin
-        #    ddmin
-        #    hdd
-        #    perses_node_priority_with_dfs_delta
-        #    perses_node_with_bfs_delta
-        #    perses_node_with_dfs_delta
-        #    pristine_hdd
 
         return command
 
@@ -111,6 +106,8 @@ class Perses(Reducer):
         secondary_stat_file = stat_file.parent / f'testscript-{stat_file.name}'
         with open(secondary_stat_file) as file:
             contents = file.readlines()
+
+        secondary_stat_file.unlink()
 
         for line in contents:
             if 'pass_count' in line:
@@ -156,5 +153,24 @@ class Perses(Reducer):
 
         # Perses generates files as "input_file.timestamp.orig". Delete them.
         [p.unlink() for p in input_file.parent.glob(f'{input_file.stem}.*.orig')]
+
+        if self.measure_memory:
+            memory_file = stat_file.parent / f'{stat_file.stem}.pqcm'
+            with open(memory_file) as file:
+                contents = file.readlines()
+            memory_file.unlink()
+
+            peak_memory = -1
+            for line in contents:
+                # timestamp, cache size (bytes)
+                # 1680896469730 392
+                memory = int(line.split()[-1])
+                if memory > peak_memory:
+                    peak_memory = memory
+
+            stats['cache_size'] = peak_memory
+
+        # Note: perses/src/org/perses/reduction/cache/QueryCacheMemoryProfiler.kt:80-92
+        # Some classes are exluded from the memory measurement there.
 
         return stats

@@ -33,7 +33,7 @@ def run_single(name: str,
     # the Benchmark class.
     temporal_dir = temp / 'redubear' / name / tag
     final_out_dir = output / name / tag
-    stat_file = final_out_dir / 'picire.json'
+    stat_file = final_out_dir / 'stats.json'
 
     report = dict()
 

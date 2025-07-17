@@ -82,7 +82,7 @@ class Tests:
                                       help='Home directory of Perses Test Suite (<path/to/project>/benchmark)')
 
         benchmark_parser.add_argument('--benchmark',
-                                      choices=['jerry', 'clang', 'gcc', 'perses'] + list(BENCHMARKS.keys()),
+                                      choices=['jerry', 'clang', 'gcc', 'perses', 'debug'] + list(BENCHMARKS.keys()),
                                       default=None,
                                       help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite. "perses": "clang" + "gcc"')
 
@@ -122,6 +122,8 @@ class Tests:
         else:
             if benchmark == 'perses':
                 benchmark = ['clang', 'gcc']
+            elif benchmark == 'debug':
+                benchmark = ['gcc-71626', 'clang-22382', 'gcc-66691', 'clang-23353']
             else:
                 benchmark = [benchmark]
 
