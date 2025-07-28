@@ -58,7 +58,7 @@ class Picireny(Picire):
 
         command = [
            'picireny',
-            '--sys-recursion-limit', '10000',
+            '--sys-recursion-limit', '100000',
             '--flatten-recursion',
             '--start', start_rule,
             '--hdd', self.hdd,
