@@ -15,7 +15,10 @@ GRAMMARS = {
               ROOT_DIR / 'JavaScriptParser.g4',
               ROOT_DIR / 'JavaScriptParserBase.py'],
              'program'),
-    'c': ([ROOT_DIR / 'C.g4'], 'compilationUnit')
+    'c': ([ROOT_DIR / 'C.g4'], 'compilationUnit'),
+    'xml': ([ROOT_DIR / 'XMLLexer.g4',
+             ROOT_DIR / 'XMLParser.g4'],
+             'document')
 }
 
 

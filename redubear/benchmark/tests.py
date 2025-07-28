@@ -15,34 +15,35 @@ BENCHMARKS = {
     'jerry-3376': ['jrts', 'test.sh', '3376-orig.js'],
     'jerry-3408': ['jrts', 'test.sh', '3408-orig.js'],
     'jerry-3431': ['jrts', 'test.sh', '3431-orig.js'],
-    'jerry-3433': ['jrts', 'test.sh', '3433-orig.js'],
+    # 'jerry-3433': ['jrts', 'test.sh', '3433-orig.js'],
     'jerry-3437': ['jrts', 'test.sh', '3437-orig.js'],
     'jerry-3479': ['jrts', 'test.sh', '3479-orig.js'],
-    'jerry-3483': ['jrts', 'test.sh', '3483-orig.js'],
+    # 'jerry-3483': ['jrts', 'test.sh', '3483-orig.js'],
     'jerry-3506': ['jrts', 'test.sh', '3506-orig.js'],
     'jerry-3523': ['jrts', 'test.sh', '3523-orig.js'],
     'jerry-3534': ['jrts', 'test.sh', '3534-orig.js'],
-    'jerry-3536': ['jrts', 'test.sh', '3536-orig.js'],
+    # 'jerry-3536': ['jrts', 'test.sh', '3536-orig.js'],
 
     # Perses Test Suite (https://github.com/uw-pluverse/perses)
     # Note that the docker environment from the linked repository must be set up.
-    'clang-18556': ['perses', 'r.sh', 'small.c'],
+    # 'clang-18556': ['perses', 'r.sh', 'small.c'],
     'clang-18596': ['perses', 'r.sh', 'small.c'],
-    'clang-19595': ['perses', 'r.sh', 'small.c'],
+    # 'clang-19595': ['perses', 'r.sh', 'small.c'],
     # 'clang-20680': ['perses', 'r.sh', 'small.c'], # unstable
-    'clang-21467': ['perses', 'r.sh', 'small.c'],
+    # 'clang-21467': ['perses', 'r.sh', 'small.c'],
     'clang-21582': ['perses', 'r.sh', 'small.c'],
     'clang-22337': ['perses', 'r.sh', 'small.c'],
-    'clang-22382': ['perses', 'r.sh', 'small.c'],
+    # 'clang-22382': ['perses', 'r.sh', 'small.c'],
     'clang-22704': ['perses', 'r.sh', 'small.c'],
     'clang-23309': ['perses', 'r.sh', 'small.c'],
-    'clang-23353': ['perses', 'r.sh', 'small.c'],
+    # 'clang-23353': ['perses', 'r.sh', 'small.c'],
     'clang-25900': ['perses', 'r.sh', 'small.c'],
     'clang-26350': ['perses', 'r.sh', 'small.c'],
     # 'clang-26760': ['perses', 'r.sh', 'small.c'], # unstable
     'clang-27137': ['perses', 'r.sh', 'small.c'],
     'clang-27747': ['perses', 'r.sh', 'small.c'],
     'clang-31259': ['perses', 'r.sh', 'small.c'],
+
 
     # Perses Test Suite (https://github.com/uw-pluverse/perses)
     # Note that the docker environment from the linked repository must be set up.
@@ -51,17 +52,67 @@ BENCHMARKS = {
     # 'gcc-60116': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-60452': ['perses', 'r.sh', 'small.c'],
     # 'gcc-61047': ['perses', 'r.sh', 'small.c'], # unstable
-    'gcc-61383': ['perses', 'r.sh', 'small.c'],
-    # 'gcc-61917': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-61383': ['perses', 'r.sh', 'small.c'],
+    'gcc-61917': ['perses', 'r.sh', 'small.c'],
     'gcc-64990': ['perses', 'r.sh', 'small.c'],
     'gcc-65383': ['perses', 'r.sh', 'small.c'],
     'gcc-66186': ['perses', 'r.sh', 'small.c'],
     'gcc-66375': ['perses', 'r.sh', 'small.c'],
     'gcc-66412': ['perses', 'r.sh', 'small.c'],
-    'gcc-66691': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-66691': ['perses', 'r.sh', 'small.c'],
     'gcc-70127': ['perses', 'r.sh', 'small.c'],
     'gcc-70586': ['perses', 'r.sh', 'small.c'],
-    'gcc-71626': ['perses', 'r.sh', 'small.c'],
+    # 'gcc-71626': ['perses', 'r.sh', 'small.c'],
+
+
+    # Perses Test Suite (https://github.com/uw-pluverse/perses)
+    # Note that the docker environment from the linked repository must be set up.
+    # 'xml/xml-071d221-1': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-071d221-2': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-1': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-2': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-3': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-4': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-1e9bc83-5': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-6': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-7': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-8': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-1e9bc83-9': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-2d4ec80-1': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-327c8af-1': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-3398ac2-1': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-3398ac2-2': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-3398ac2-3': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-3398ac2-4': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-3398ac2-5': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-4c99b96-1': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-4c99b96-2': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-3': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-4': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-5': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-6': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-7': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-8': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-9': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-4c99b96-10': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-11': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-4c99b96-12': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-13': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-14': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-15': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-16': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-17': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-4c99b96-18': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-4c99b96-19': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-1': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-2': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-8ede045-3': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-4': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-5': ['perses', 'r.sh', 'input.xml'],
+    'xml/xml-8ede045-6': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-7': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-8ede045-8': ['perses', 'r.sh', 'input.xml'],
+    # 'xml/xml-f053486-1': ['perses', 'r.sh', 'input.xml'],
 }
 
 
@@ -82,7 +133,7 @@ class Tests:
                                       help='Home directory of Perses Test Suite (<path/to/project>/benchmark)')
 
         benchmark_parser.add_argument('--benchmark',
-                                      choices=['jerry', 'clang', 'gcc', 'perses', 'debug'] + list(BENCHMARKS.keys()),
+                                      choices=['clang', 'gcc', 'jerry', 'xml', 'all', 'perses', 'debug'] + list(BENCHMARKS.keys()),
                                       default=None,
                                       help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite. "perses": "clang" + "gcc"')
 
@@ -120,8 +171,10 @@ class Tests:
         if benchmark in BENCHMARKS:
             self.tests.append((benchmark, BENCHMARKS[benchmark]))
         else:
+            if benchmark == 'all':
+                benchmark = ['clang', 'gcc', 'xml', 'jerry']
             if benchmark == 'perses':
-                benchmark = ['clang', 'gcc']
+                benchmark = ['clang', 'gcc', 'xml']
             elif benchmark == 'debug':
                 benchmark = ['gcc-71626', 'clang-22382', 'gcc-66691', 'clang-23353']
             else:
