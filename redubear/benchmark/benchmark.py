@@ -62,7 +62,10 @@ def run_single(name: str,
     exit_code, stdout = run_command(
         command,
         oracle.parent,
-        env=dict(environ, PYTHONOPTIMIZE='1', PERSES_CACHE_MEMORY_PROFILING_TIME_INTERVAL='3000'),
+        env=dict(environ,
+                 PYTHONOPTIMIZE='1',
+                 PERSES_CACHE_MEMORY_PROFILING_TIME_INTERVAL='3000',
+                 XML_JAR_DIR='/home/vincedani/res/benchmark/perses/benchmark/xml/lib'),
     )
 
     logger.info(f'[{datetime.now().strftime("%Y-%m-%d %H:%M:%S")}] {name} exited with: {exit_code}')
