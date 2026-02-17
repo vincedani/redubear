@@ -52,7 +52,7 @@ BENCHMARKS = {
     # 'gcc-60116': ['perses', 'r.sh', 'small.c'], # unstable
     'gcc-60452': ['perses', 'r.sh', 'small.c'],
     # 'gcc-61047': ['perses', 'r.sh', 'small.c'], # unstable
-    # 'gcc-61383': ['perses', 'r.sh', 'small.c'],
+    'gcc-61383': ['perses', 'r.sh', 'small.c'],
     'gcc-61917': ['perses', 'r.sh', 'small.c'],
     'gcc-64990': ['perses', 'r.sh', 'small.c'],
     'gcc-65383': ['perses', 'r.sh', 'small.c'],
@@ -135,7 +135,7 @@ class Tests:
         benchmark_parser.add_argument('--benchmark',
                                       choices=['clang', 'gcc', 'jerry', 'xml', 'all', 'perses', 'debug'] + list(BENCHMARKS.keys()),
                                       default=None,
-                                      help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite. "perses": "clang" + "gcc"')
+                                      help='Test case to be reduced. "jerry", "clang", "gcc": whole test suite. "perses": "clang" + "gcc" + "xml"')
 
         benchmark_parser.add_argument('--custom-oracle',
                                       type=lambda p: process_path(parser, p, should_exist=True),
@@ -173,7 +173,7 @@ class Tests:
         else:
             if benchmark == 'all':
                 benchmark = ['clang', 'gcc', 'xml', 'jerry']
-            if benchmark == 'perses':
+            elif benchmark == 'perses':
                 benchmark = ['clang', 'gcc', 'xml']
             elif benchmark == 'debug':
                 benchmark = ['gcc-71626', 'clang-22382', 'gcc-66691', 'clang-23353']
